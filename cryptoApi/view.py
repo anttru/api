@@ -1,16 +1,16 @@
+from pyexpat import model
 from cryptoApi.models import CrytoValueModel
 from cryptoApi import COINS
 import tkinter as tk
 from tkinter import ttk
 
 class CryptoValueView:
-
     
-    def __init__(self):
+    def __init__(self, model : CrytoValueModel):
         self.origin = "BTC"
         self.destination = "EUR"
         self.petitionFlag = 0
-        self.model = CrytoValueModel()
+        self.model = model
 
         self.window = tk.Tk()
         self.labelTop= tk.Label(self.window, text = "ExchangePro")
@@ -20,7 +20,7 @@ class CryptoValueView:
         self.labelFrom = tk.Label(self.window, text = "to: ")
         self.labelFrom.grid(column = 0, row = 2)
         
-        self.fromAmount = tk.StringVar()
+        self.fromAmount = tk.StringVar(value = 1)
         self.entryFrom = tk.Entry(self.window, textvariable = self.fromAmount)
         self.entryFrom.grid(column = 3, row = 1)
         
@@ -43,14 +43,14 @@ class CryptoValueView:
         self.selectTo["state"] = "readonly"
         self.selectTo.bind("<<ComboboxSelected>>", self.setDestination)
 
-        self.button = tk.Button(self.window, text = "Convert", command = self.calculate)
+        self.button = tk.Button(self.window, text = "Convert", command = self.informAndAskModel)
         self.button.grid(row = 2, column = 4)
 
-    def calculate(self):
+    def informAndAskModel(self):
         self.model.origin = self.origin
         self.model.destination = self.destination
         self.model.getRate()
-        self.toAmount.set(self.model.rate * float(self.fromAmount.get()))
+        self.toAmount.set(self.model.calculate(self.fromAmount.get()))
         
     def setOrigin(self, event):
         self.origin = self.selectedOrigin.get()

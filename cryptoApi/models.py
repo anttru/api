@@ -9,7 +9,6 @@ class CrytoValueModel:
     def __init__(self, origin : str = "", destination : str = ""):
         self.origin = origin
         self.destination = destination
-        self.amount = 0
         self.rate = None
 
 
@@ -20,5 +19,6 @@ class CrytoValueModel:
             raise APIError(self.answer.json()["error"])
         self.rate = self.answer.json()["rate"]
 
-
+    def calculate(self, amount):
+        return self.rate * float(amount)
 
